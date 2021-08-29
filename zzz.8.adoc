@@ -1,0 +1,111 @@
+= zzz(8)
+:doctype: manpage
+:repo-uri: https://github.com/jirutka/zzz
+:issues-uri: {repo-uri}/issues
+
+== NAME
+
+zzz, ZZZ - suspend or hibernate your computer
+
+
+== SYNOPSIS
+
+*zzz* [options] +
+*ZZZ* [options]
+
+
+== DESCRIPTION
+
+*zzz* is a simple script to suspend or hibernate your computer.
+It supports hooks before and after suspending.
+
+
+== OPTIONS
+
+*-n*::
+Dry-run mode.
+Instead of performing an ACPI action, *zzz* will just sleep for a few seconds.
+
+*-S*::
+Enter low-power idle mode (ACPI S1, kernel name "`freeze`").
+
+*-z*::
+Enter suspend to RAM mode (ACPI S3, kernel name "`mem`").
+This is the default for *zzz*.
+
+*-Z*::
+Enter hibernate to disk mode (ACPI S4, kernel name "`disk`") and power off.
+This is the default for *ZZZ*.
+
+*-R*::
+Enter hibernate to disk mode and reboot.
+This can be used to switch operating systems.
+
+*-H*::
+Enter hibernate to disk mode and suspend.
+This is also know as suspend-hybrid.
+
+*-h*::
+Print help message and exit.
+
+
+== FILES
+
+/etc/zzz.d/*::
+Executable scripts found in this directory are executed before/after the system is suspended/resumed by *zzz*.
+
+/etc/zzz.d/suspend/*::
+Executable scripts found in this directory are executed before the system is suspended by *zzz*.
+This directory is supported for compatibility with `zzz(8)` on Void Linux.
+
+/etc/zzz.d/suspend/*::
+Executable scripts found in this directory are executed after the system is resumed.
+This directory is supported for compatibility with `zzz(8)` on Void Linux.
+
+The scripts are executed sequentially in alphabetic order with two arguments:
+
+. "`pre`" (before suspend), or "`post`" (after resume),
+. the same as *ZZZ_MODE* (see below).
+
+And the following environment variables:
+
+ZZZ_MODE::
+The selected suspend mode; one of "`hibernate`", "`noop`", "`standby`", or "`suspend`".
+
+ZZZ_HIBERNATE_MODE::
+The selected hibernate mode: "`platform`", "`reboot`", or "`suspend`".
+
+
+== DIAGNOSTICS
+
+suspend/hibernate is not supported::
+The hardware does not support ACPI S3/S4 with this kernel.
+
+/sys/power/state is not writable::
+You lack sufficent privilege to write to `/sys/power/state`.
+
+another instance of zzz is running::
+*zzz* locks `/sys/power` during operation.
+Perhaps a hook is stuck?
+
+going to _<mode>_::
+*zzz* is going to execute the pre hooks and suspend the system into _<mode>_.
+
+hook script _<script>_ exited with code _<status>_::
+The hook _<script>_ failed.
+Note that *zzz* does not stop if a hook script fails.
+
+resuming from _<mode>_::
+The system has woken up from _<mode>_ and *zzz* is going to execute the post hooks.
+
+
+== AUTHORS
+
+Jakub Jirutka
+
+This script is based on *zzz(8)* script from Void Linux written by Leah Neukirchen.
+
+
+== REPORTING BUGS
+
+Report bugs to the project`'s issue tracker at {issues-uri}.

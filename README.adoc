@@ -1,0 +1,38 @@
+= Zzz…
+:proj-name: zzz
+:gh-name: jirutka/{proj-name}
+
+A simple script to suspend or hibernate your computer.
+It supports hooks before and after suspending.
+
+Refer to link:zzz.8.adoc[zzz(8)] for more information.
+
+
+== Requirements
+
+.*Runtime*:
+* http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html[POSIX-sh] compatible shell (e.g. Busybox ash, dash, ZSH, bash, …)
+* `grep`, `flock`, `logger`, `sed` (Busybox or GNU)
+
+.*Build*:
+* https://www.gnu.org/software/make/[GNU Make]
+* http://asciidoctor.org/[Asciidoctor] (for building man pages)
+
+
+== Installation
+
+Install package {proj-name} from the Alpine’s Edge community repository:
+
+[source, sh, subs="+attributes"]
+apk add {proj-name}
+
+
+== Credits
+
+This script is based on https://man.voidlinux.org/zzz.8[zzz(8)] (https://github.com/void-linux/void-runit/blob/master/zzz[source]) script from Void Linux written by Leah Neukirchen.
+
+
+== License
+
+This project is licensed under http://opensource.org/licenses/MIT/[MIT License].
+For the full text of the license, see the link:LICENSE[LICENSE] file.
