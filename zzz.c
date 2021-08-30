@@ -44,7 +44,7 @@
 #define PROGNAME         "zzz"
 
 #ifndef VERSION
-  #define VERSION        "0.0.0"
+  #define VERSION        "0.1.0"
 #endif
 
 #ifndef ZZZ_HOOKS_DIR

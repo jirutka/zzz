@@ -1,6 +1,6 @@
 = Zzz…
 :proj-name: zzz
-:version: 0.0.0
+:version: 0.1.0
 :gh-name: jirutka/{proj-name}
 :releases-uri: https://github.com/{gh-name}/releases/download/v{version}
 
