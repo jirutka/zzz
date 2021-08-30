@@ -1,0 +1,60 @@
+name: CI
+on:
+  - push
+  - pull_request
+
+jobs:
+  build-ubuntu:
+    name: Build on Ubuntu x86_64 with ${{ matrix.CC }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        CC:
+          - gcc
+          - clang
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Install build dependencies
+        run: sudo apt-get install asciidoctor
+
+      - run: make build CC=${{ matrix.CC }}
+
+      - run: ./build/zzz -V
+
+      - run: make install DESTDIR=dest
+
+  build-alpine:
+    name: Build on Alpine ${{ matrix.ARCH }} with ${{ matrix.CC }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ARCH:
+          - x86_64
+          - aarch64
+          - armv7
+          - ppc64le
+          - riscv64
+        CC:
+          - gcc
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Download alpine-chroot-install
+        run: |
+          wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.1/alpine-chroot-install
+          echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c
+          chmod +x alpine-chroot-install
+
+      - name: Install latest Alpine Linux for ${{ matrix.ARCH }}
+        run: |
+          sudo ./alpine-chroot-install \
+            -a ${{ matrix.ARCH }} \
+            -b ${{ matrix.ARCH == 'riscv64' && 'edge' || 'latest-stable' }} \
+            -p 'asciidoctor build-base'
+          /alpine/enter-chroot uname -a
+
+      - name: Build zzz
+        run: /alpine/enter-chroot -u $USER make build CC=${{ matrix.CC }}

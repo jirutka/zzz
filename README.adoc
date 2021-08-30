@@ -2,6 +2,10 @@
 :proj-name: zzz
 :gh-name: jirutka/{proj-name}
 
+ifdef::env-github[]
+image:https://github.com/{gh-name}/workflows/CI/badge.svg[Binaries Workflow, link=https://github.com/{gh-name}/actions?query=workflow%3A%22CI%22]
+endif::env-github[]
+
 A simple program to suspend or hibernate your computer.
 It supports hooks before and after suspending.
 
