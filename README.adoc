@@ -1,6 +1,8 @@
 = Zzz…
 :proj-name: zzz
+:version: 0.0.0
 :gh-name: jirutka/{proj-name}
+:releases-uri: https://github.com/{gh-name}/releases/download/v{version}
 
 ifdef::env-github[]
 image:https://github.com/{gh-name}/workflows/CI/badge.svg[Binaries Workflow, link=https://github.com/{gh-name}/actions?query=workflow%3A%22CI%22]
@@ -9,7 +11,7 @@ endif::env-github[]
 A simple program to suspend or hibernate your computer.
 It supports hooks before and after suspending.
 
-Refer to link:zzz.8.adoc[zzz(8)] for more information.
+Refer to link:zzz.8.adoc[zzz(8)] for usage information.
 
 
 == Requirements
@@ -25,10 +27,49 @@ Refer to link:zzz.8.adoc[zzz(8)] for more information.
 
 == Installation
 
+=== On Alpine Linux
+
 Install package {proj-name} from the Alpine’s Edge community repository:
 
 [source, sh, subs="+attributes"]
 apk add {proj-name}
+
+
+=== Using Pre-Built Binary
+
+{releases-uri}/{proj-name}-{version}-x86_64-unknown-linux.tar.gz[[x86_64]]
+{releases-uri}/{proj-name}-{version}-aarch64-unknown-linux.tar.gz[[aarch64]]
+{releases-uri}/{proj-name}-{version}-armv7-unknown-linux.tar.gz[[armv7]]
+{releases-uri}/{proj-name}-{version}-ppc64le-unknown-linux.tar.gz[[ppc64le]]
+{releases-uri}/{proj-name}-{version}-riscv64-unknown-linux.tar.gz[[riscv64]]
+
+. Download and extract release tarball for your CPU architecture (pick the right link from the list above):
++
+[source, sh, subs="verbatim, attributes"]
+----
+wget {releases-uri}/{proj-name}-{version}-x86_64-unknown-linux.tar.gz
+tar -xzf {proj-name}-{version}-*.tar.gz
+----
+
+. Install `{proj-name}` somewhere on your `PATH`, e.g. `/usr/local/bin`:
++
+[source, sh, subs="verbatim, attributes"]
+install -m 755 {proj-name}-{version}-*/{proj-name} /usr/local/bin/
+
+All binaries are statically linked with http://www.musl-libc.org/[musl libc], so they work on every Linux system (distro) regardless of used libc.
+
+
+=== From Source Tarball
+
+[source, sh, subs="+attributes"]
+----
+wget https://github.com/{gh-name}/archive/v{version}/{proj-name}-{version}.tar.gz
+tar -xzf {proj-name}-{version}.tar.gz
+cd {proj-name}-{version}
+
+make build
+make install DESTDIR=/ prefix=/usr/local
+----
 
 
 == Credits
