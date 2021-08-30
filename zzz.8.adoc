@@ -10,13 +10,13 @@ zzz, ZZZ - suspend or hibernate your computer
 
 == SYNOPSIS
 
-*zzz* [options] +
-*ZZZ* [options]
+*zzz* [-v] [-n|s|S|z|Z|H|R|V|h] +
+*ZZZ* [-v] [-n|s|S|z|Z|H|R|V|h]
 
 
 == DESCRIPTION
 
-*zzz* is a simple script to suspend or hibernate your computer.
+*zzz* is a simple program to suspend or hibernate your computer.
 It supports hooks before and after suspending.
 
 
@@ -26,7 +26,7 @@ It supports hooks before and after suspending.
 Dry-run mode.
 Instead of performing an ACPI action, *zzz* will just sleep for a few seconds.
 
-*-S*::
+*-s*, *-S*::
 Enter low-power idle mode (ACPI S1, kernel name "`freeze`").
 
 *-z*::
@@ -37,13 +37,19 @@ This is the default for *zzz*.
 Enter hibernate to disk mode (ACPI S4, kernel name "`disk`") and power off.
 This is the default for *ZZZ*.
 
+*-H*::
+Enter hibernate to disk mode and suspend.
+This is also know as suspend-hybrid.
+
 *-R*::
 Enter hibernate to disk mode and reboot.
 This can be used to switch operating systems.
 
-*-H*::
-Enter hibernate to disk mode and suspend.
-This is also know as suspend-hybrid.
+*-v*::
+Be verbose.
+
+*-V*::
+Print program name & version and exit.
 
 *-h*::
 Print help message and exit.
@@ -76,34 +82,33 @@ ZZZ_HIBERNATE_MODE::
 The selected hibernate mode: "`platform`", "`reboot`", or "`suspend`".
 
 
-== DIAGNOSTICS
+== EXIT CODES
 
-suspend/hibernate is not supported::
-The hardware does not support ACPI S3/S4 with this kernel.
+* *0* -- Clean exit, no error has encountered.
+* *1* -- General error.
+* *10* -- Invalid usage.
+* *11* -- The requested sleep state or hibernation mode is not supported or you don`'t have insufficient privileges.
+* *12* -- Unable to obtain lock; another instance of *zzz* is running.
+* *20* -- Failed to put system to sleep.
+* *21* -- Some hook script exited with a non-zero code. Note that *zzz* does not stop when a hook script fails.
 
-/sys/power/state is not writable::
-You lack sufficent privilege to write to `/sys/power/state`.
 
-another instance of zzz is running::
-*zzz* locks `/sys/power` during operation.
-Perhaps a hook is stuck?
+== LOGGING
 
-going to _<mode>_::
-*zzz* is going to execute the pre hooks and suspend the system into _<mode>_.
+Information and debug messages are printed to STDOUT, error messages are printed to STDERR.
+All messages are also logged to syslog with ident string "`zzz`" and facility code 1 (user).
 
-hook script _<script>_ exited with code _<status>_::
-The hook _<script>_ failed.
-Note that *zzz* does not stop if a hook script fails.
+Debug messages are not printed and logged unless *-v* is specified.
 
-resuming from _<mode>_::
-The system has woken up from _<mode>_ and *zzz* is going to execute the post hooks.
+
+== HISTORY
+
+This program is inspired from *zzz(8)* script in Void Linux written by Leah Neukirchen.
 
 
 == AUTHORS
 
 Jakub Jirutka
-
-This script is based on *zzz(8)* script from Void Linux written by Leah Neukirchen.
 
 
 == REPORTING BUGS
