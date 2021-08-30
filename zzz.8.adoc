@@ -58,17 +58,20 @@ Print help message and exit.
 == FILES
 
 /etc/zzz.d/*::
-Executable scripts found in this directory are executed before/after the system is suspended/resumed by *zzz*.
+Hook scripts found in this directory are executed before/after the system is suspended/resumed by *zzz*.
 
 /etc/zzz.d/suspend/*::
-Executable scripts found in this directory are executed before the system is suspended by *zzz*.
+Hook scripts found in this directory are executed before the system is suspended by *zzz*.
 This directory is supported for compatibility with `zzz(8)` on Void Linux.
 
 /etc/zzz.d/suspend/*::
-Executable scripts found in this directory are executed after the system is resumed.
+Hook scripts found in this directory are executed after the system is resumed.
 This directory is supported for compatibility with `zzz(8)` on Void Linux.
 
-The scripts are executed sequentially in alphabetic order with two arguments:
+The hook script is a regular file (or a symlink) owned by root, executable by the owner and not writeable by others.
+Any other files found in the aforesaid directories are ignored.
+
+The hook scripts are executed sequentially in alphabetic order with two arguments:
 
 . "`pre`" (before suspend), or "`post`" (after resume),
 . the same as *ZZZ_MODE* (see below).

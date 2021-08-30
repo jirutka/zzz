@@ -154,12 +154,14 @@ done:
 	return rc;
 }
 
-static int filter_xfile (const struct dirent *entry) {
+static int filter_hook_script (const struct dirent *entry) {
 	struct stat sb;
 
 	return stat(entry->d_name, &sb) >= 0
-		&& S_ISREG(sb.st_mode)  // is regular file
-		&& sb.st_mode & S_IXUSR;  // is executable
+		&& S_ISREG(sb.st_mode)     // is regular file
+		&& sb.st_mode & S_IXUSR    // is executable by owner
+		&& !(sb.st_mode & S_IWOTH) // is not writable by others
+		&& sb.st_uid == 0;         // is owned by root
 }
 
 static int run_hooks (const char *dirpath, const char **argv) {
@@ -171,7 +173,7 @@ static int run_hooks (const char *dirpath, const char **argv) {
 		goto done;
 	}
 	int n = 0;
-	if ((n = scandir(".", &entries, filter_xfile, alphasort)) < 0) {
+	if ((n = scandir(".", &entries, filter_hook_script, alphasort)) < 0) {
 		log_errno("%s", dirpath);
 		rc = RC_ERR;
 		goto done;
