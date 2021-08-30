@@ -26,7 +26,7 @@ jobs:
       - run: make install DESTDIR=dest
 
   build-alpine:
-    name: Build on Alpine ${{ matrix.ARCH }} with ${{ matrix.CC }}
+    name: Build on Alpine ${{ matrix.ARCH }} with ${{ matrix.CC }} ${{ matrix.LDFLAGS }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,9 +38,17 @@ jobs:
           - riscv64
         CC:
           - gcc
+        LDFLAGS:
+          - ''
+          - -static -s
+        exclude:
+          - CC: clang
+            LDFLAGS: -static -s
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
+        with:
+          fetch-depth: 0  # fetch all history
 
       - name: Download alpine-chroot-install
         run: |
@@ -56,5 +64,50 @@ jobs:
             -p 'asciidoctor build-base'
           /alpine/enter-chroot uname -a
 
+      - name: Get version
+        run: |
+          GIT_TAG=$(git describe --tags --match 'v*' 2>/dev/null || echo ${GITHUB_REF##*/})
+          echo "VERSION=${GIT_TAG#v}" >> $GITHUB_ENV
+
       - name: Build zzz
-        run: /alpine/enter-chroot -u $USER make build CC=${{ matrix.CC }}
+        run: |
+          /alpine/enter-chroot -u $USER \
+              make build CC=${{ matrix.CC }} LDFLAGS="${{ matrix.LDFLAGS }}" VERSION="${{ env.VERSION }}"
+          ls -lah build/
+          file build/zzz
+
+      - name: zzz -V
+        run: /alpine/enter-chroot -u $USER ./build/zzz -V
+
+      - name: Create tarball
+        if: ${{ matrix.LDFLAGS != '' }}
+        run: |
+          TARBALL_NAME=zzz-${{ env.VERSION }}-${{ matrix.ARCH }}-unknown-linux
+          cp LICENSE build/
+          mv build $TARBALL_NAME
+          tar -czf $TARBALL_NAME.tar.gz $TARBALL_NAME
+          shasum -a 256 $TARBALL_NAME.tar.gz > $TARBALL_NAME.tar.gz.sha256
+
+      - name: Upload tarball to artifacts
+        if: ${{ matrix.LDFLAGS != '' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: tarballs
+          path: '*.tar.gz*'
+
+  publish:
+    name: Publish tarballs to Releases
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name != 'pull_request' }}
+    needs:
+      - build-alpine
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Download tarballs from artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Upload tarballs to Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: tarballs/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
