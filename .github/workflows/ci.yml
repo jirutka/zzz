@@ -41,9 +41,6 @@ jobs:
         LDFLAGS:
           - ''
           - -static -s
-        exclude:
-          - CC: clang
-            LDFLAGS: -static -s
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
