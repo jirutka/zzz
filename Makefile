@@ -1,4 +1,4 @@
-prefix        := /usr/local
+prefix        := $(or $(prefix),$(PREFIX),/usr/local)
 mandir        := $(prefix)/share/man
 sbindir       := $(prefix)/sbin
 sysconfdir    := /etc
