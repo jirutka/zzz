@@ -35,6 +35,16 @@ Install package {proj-name} from the Alpine’s Edge community repository:
 apk add {proj-name}
 
 
+=== On Arch Linux
+
+Install package https://aur.archlinux.org/packages/{proj-name}[{proj-name}] from AUR:
+
+[source, sh, subs="+attributes"]
+yay -S {proj-name}
+
+Or use another AUR helper.
+
+
 === Using Pre-Built Binary
 
 {releases-uri}/{proj-name}-{version}-x86_64-unknown-linux.tar.gz[[x86_64]]
