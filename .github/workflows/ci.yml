@@ -49,8 +49,8 @@ jobs:
 
       - name: Download alpine-chroot-install
         run: |
-          wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.1/alpine-chroot-install
-          echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c
+          wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.3/alpine-chroot-install
+          echo 'c3005e323029637db20ec9595243ac94bb9b2226  alpine-chroot-install' | sha1sum -c
           chmod +x alpine-chroot-install
 
       - name: Install latest Alpine Linux for ${{ matrix.ARCH }}
