@@ -116,9 +116,16 @@ static const char *HELP_MSG =
 static unsigned int flags = 0;
 
 
-static bool str_ends_with (const char *str, const char *suffix) {
-	int diff = strlen(str) - strlen(suffix);
-	return diff > 0 && strcmp(&str[diff], suffix) == 0;
+static bool path_ends_with (const char *path, const char *suffix) {
+	size_t pathlen = strlen(path), suflen = strlen(suffix);
+	int diff = pathlen - suflen;
+	if (diff < 0) {
+		return false;
+	}
+	if (diff > 0 && path[pathlen - suflen - 1] != '/') {
+		return false;
+	}
+	return strcmp(&path[diff], suffix) == 0;
 }
 
 static int run_hook (const char *path, const char **argv) {
@@ -321,7 +328,7 @@ int main (int argc, char **argv) {
 	char *sleep_state = "mem";
 	char *hibernate_mode = "";
 
-	if (str_ends_with(argv[0], "/ZZZ")) {
+	if (path_ends_with(argv[0], "ZZZ")) {
 		zzz_mode = "hibernate";
 		sleep_state = "disk";
 		hibernate_mode = "platform";
