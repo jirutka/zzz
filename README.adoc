@@ -2,10 +2,12 @@
 :proj-name: zzz
 :version: 0.1.0
 :gh-name: jirutka/{proj-name}
+:repology-name: zzz-jirutka
 :releases-uri: https://github.com/{gh-name}/releases/download/v{version}
 
 ifdef::env-github[]
 image:https://github.com/{gh-name}/workflows/CI/badge.svg[Binaries Workflow, link=https://github.com/{gh-name}/actions?query=workflow%3A%22CI%22]
+image:https://repology.org/badge/tiny-repos/{repology-name}.svg[Packaging status, link=https://repology.org/project/{repology-name}]
 endif::env-github[]
 
 A simple program to suspend or hibernate your computer.
