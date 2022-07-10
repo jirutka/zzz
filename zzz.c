@@ -67,9 +67,6 @@
 #define RC_OK             0
 #define RC_ERR           -1
 
-#define isempty(arg) \
-	(arg == NULL || arg[0] == '\0')
-
 #define log_err(format, ...) \
 	do { \
 		fprintf(stderr, PROGNAME ": ERROR: " format "\n", __VA_ARGS__); \
@@ -115,6 +112,10 @@ static const char *HELP_MSG =
 
 static unsigned int flags = 0;
 
+
+static bool str_empty (const char *str) {
+	return str == NULL || str[0] == '\0';
+}
 
 static bool str_equal (const char *str1, const char *str2) {
 	return strcmp(str1, str2) == 0;
@@ -250,10 +251,10 @@ static int execute (const char* zzz_mode, const char* sleep_state, const char* h
 	int rc = EXIT_SUCCESS;
 
 	// Check if we can fulfil the request.
-	if (!isempty(sleep_state) && check_sleep_mode("/sys/power/state", sleep_state) < 0) {
+	if (!str_empty(sleep_state) && check_sleep_mode("/sys/power/state", sleep_state) < 0) {
 		return ERR_UNSUPPORTED;
 	}
-	if (!isempty(hibernate_mode) && check_sleep_mode("/sys/power/disk", hibernate_mode) < 0) {
+	if (!str_empty(hibernate_mode) && check_sleep_mode("/sys/power/disk", hibernate_mode) < 0) {
 		return ERR_UNSUPPORTED;
 	}
 
@@ -278,14 +279,14 @@ static int execute (const char* zzz_mode, const char* sleep_state, const char* h
 		rc = ERR_HOOK;
 	}
 
-	if (!isempty(hibernate_mode) && file_write("/sys/power/disk", hibernate_mode) < 0) {
+	if (!str_empty(hibernate_mode) && file_write("/sys/power/disk", hibernate_mode) < 0) {
 		rc = ERR_SUSPEND;
 		goto done;
 	}
 
 	log_info("Going to %s (%s)", zzz_mode, sleep_state);
 
-	if (isempty(sleep_state)) {
+	if (str_empty(sleep_state)) {
 		sleep(5);
 
 	} else if (file_write("/sys/power/state", sleep_state) < 0) {
