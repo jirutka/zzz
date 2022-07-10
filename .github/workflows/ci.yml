@@ -77,14 +77,13 @@ jobs:
           cp LICENSE build/
           mv build $TARBALL_NAME
           tar -czf $TARBALL_NAME.tar.gz $TARBALL_NAME
-          shasum -a 256 $TARBALL_NAME.tar.gz > $TARBALL_NAME.tar.gz.sha256
 
       - name: Upload tarball to artifacts
         if: ${{ matrix.LDFLAGS != '' }}
         uses: actions/upload-artifact@v2
         with:
           name: tarballs
-          path: '*.tar.gz*'
+          path: '*.tar.gz'
 
   publish:
     name: Publish tarballs to Releases
@@ -95,6 +94,10 @@ jobs:
     steps:
       - name: Download tarballs from artifacts
         uses: actions/download-artifact@v2
+
+      - name: Generate checksums.txt
+        run: shasum -a 256 *.tar.gz | tee checksums.txt
+        working-directory: tarballs
 
       - name: Upload tarballs to Releases
         uses: softprops/action-gh-release@v1
