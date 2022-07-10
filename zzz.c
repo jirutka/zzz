@@ -116,9 +116,13 @@ static const char *HELP_MSG =
 static unsigned int flags = 0;
 
 
+static bool str_equal (const char *str1, const char *str2) {
+	return strcmp(str1, str2) == 0;
+}
+
 static bool str_ends_with (const char *str, const char *suffix) {
 	int diff = strlen(str) - strlen(suffix);
-	return diff > 0 && strcmp(&str[diff], suffix) == 0;
+	return diff > 0 && str_equal(&str[diff], suffix);
 }
 
 static int run_hook (const char *path, const char **argv) {
@@ -321,7 +325,7 @@ int main (int argc, char **argv) {
 	char *sleep_state = "mem";
 	char *hibernate_mode = "";
 
-	if (str_ends_with(argv[0], "/ZZZ")) {
+	if (str_equal(argv[0], "ZZZ") || str_ends_with(argv[0], "/ZZZ")) {
 		zzz_mode = "hibernate";
 		sleep_state = "disk";
 		hibernate_mode = "platform";
