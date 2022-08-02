@@ -64,7 +64,7 @@ Hook scripts found in this directory are executed before/after the system is sus
 Hook scripts found in this directory are executed before the system is suspended by *zzz*.
 This directory is supported for compatibility with `zzz(8)` on Void Linux.
 
-/etc/zzz.d/suspend/*::
+/etc/zzz.d/resume/*::
 Hook scripts found in this directory are executed after the system is resumed.
 This directory is supported for compatibility with `zzz(8)` on Void Linux.
 
