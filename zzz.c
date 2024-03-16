@@ -71,7 +71,7 @@
 extern char **environ;
 
 static const char *HELP_MSG =
-	"Usage: " PROGNAME " [-v] [-n|s|S|z|Z|H|R|V|h]\n"
+	"Usage: " PROGNAME " [-v] [-n|s|S|z|Z|H|X|R|V|h]\n"
 	"\n"
 	"Suspend or hibernate the system.\n"
 	"\n"
@@ -82,6 +82,7 @@ static const char *HELP_MSG =
 	"  -z   Suspend to RAM (ACPI S3). [default for zzz(8)]\n"
 	"  -Z   Hibernate to disk & power off (ACPI S4). [default for ZZZ(8)]\n"
 	"  -H   Hibernate to disk & suspend (aka suspend-hybrid).\n"
+	"  -X   Hibernate to disk & shutdown.\n"
 	"  -R   Hibernate to disk & reboot.\n"
 	"  -v   Be verbose.\n"
 	"  -V   Print program name & version and exit.\n"
@@ -313,7 +314,7 @@ int main (int argc, char **argv) {
 
 	int optch;
 	opterr = 0;  // don't print implicit error message on unrecognized option
-	while ((optch = getopt(argc, argv, "nsSzHRZvhV")) != -1) {
+	while ((optch = getopt(argc, argv, "nsSzHRXZvhV")) != -1) {
 		switch (optch) {
 			case -1:
 				break;
@@ -342,6 +343,11 @@ int main (int argc, char **argv) {
 				zzz_mode = "hibernate";
 				sleep_state = "disk";
 				hibernate_mode = "reboot";
+				break;
+			case 'X':
+				zzz_mode = "hibernate";
+				sleep_state = "disk";
+				hibernate_mode = "shutdown";
 				break;
 			case 'Z':
 				zzz_mode = "hibernate";
