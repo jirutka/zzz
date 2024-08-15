@@ -1,6 +1,6 @@
 = Zzz…
 :proj-name: zzz
-:version: 0.1.1
+:version: 0.2.0
 :gh-name: jirutka/{proj-name}
 :repology-name: zzz-jirutka
 :releases-uri: https://github.com/{gh-name}/releases/download/v{version}
